@@ -127,6 +127,18 @@ class XFeat(nn.Module):
 				'descriptors': feats,
 				'scales': sc }
 
+	@torch.inference_mode()
+	def init_lighterglue(self):
+		"""
+			Initialize lighterglue module for matching XFeat features. 
+			It is better to do it during initialization before calling match_lighterglue.
+		"""
+		if not self.kornia_available:
+			raise RuntimeError('We rely on kornia for LightGlue. Install with: pip install kornia')
+		elif self.lighterglue is None:
+			from modules.lighterglue import LighterGlue
+			self.lighterglue = LighterGlue()
+
 
 	@torch.inference_mode()
 	def match_lighterglue(self, d0, d1, min_conf = 0.1):
